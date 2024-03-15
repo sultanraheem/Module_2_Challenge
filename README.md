@@ -124,9 +124,11 @@ These were done with these lines of code:
 
 Concepts for conditional formatting were verbally understood by Cadeem Musgrove on a Zoom call, and later implemented with my cohort as a team
 
-The source: 
+                A source to help grasp this concept include: 
+                https://learn.microsoft.com/en-us/office/vba/api/excel.colorindex
+                https://www.excel-pratique.com/en/vba_tricks/cell-color-conditional-formatting
 
-This was achieved with a combination of help from source and cohort, see below comment and sources.
+This was achieved with a combination of help from source and cohort, see below comment and sources for more conditional formatting.
 
 ## This conditional formatting and all calculations ran for all three of the sheets that are in the Excel file
 
