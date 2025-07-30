@@ -1,183 +1,134 @@
-# Module_2_Challenge
-Module 2 Challenge 
+# VBA Stock Data Analysis – Module 2 Challenge
 
-## This is the README for the Module 2 Challenge for Sultan Raheem
+## Project Overview
 
-NOTE: This assignment has been done with group work with myself, Rob Molenda, Lucas Perez, and Muneeb Samad
-I also got verbal input from Cadeem Musgrove separately on Zoom regarding conditional formatting.
+This project is a VBA-based stock data analyzer developed for the Module 2 Challenge. It automates the analysis of stock data from the years 2018, 2019, and 2020. The macro generates summary statistics and applies conditional formatting for clear visualization.
 
-The whole of our projects have been achieved through teamwork as a cohort.
+The script calculates:
 
-## Within the submission there are screenshots for 2018, 2019, and 2020 results in the stock data
+- Yearly Change  
+- Percent Change  
+- Total Stock Volume  
+- Greatest Percent Increase  
+- Greatest Percent Decrease  
+- Greatest Total Volume
 
-## There is also a BAS file for the VBA script and it is called Sub Stocks_Test
+## Contributors
 
-## This submission creates a script that loops and outputs results for all the stocks, it takes the Ticker name, Yearly Change, Percent Change, and Total Stock Volume
+This project was completed in collaboration with:
 
-This is achieved by looking at the solutions for grading within the class and the lotto numbers solution done in class
+- Sultan Raheem  
+- Rob Molenda  
+- Lucas Perez  
+- Muneeb Samad  
 
-the relevant lines of code are: 
+Verbal guidance on conditional formatting was also provided by Cadeem Musgrove during a Zoom session.
 
-' Loop through each worksheet
-    For Each ws In Worksheets
+## Files Included
 
-        Next ws ' Close the loop through worksheets
+- `Sub Stocks_Test.bas` – The main VBA macro file  
+- Output screenshots for 2018, 2019, and 2020  
 
-## It also calculates the Greatest Percent Increase, Decrease, and Greatest Total Volume
+## Features
 
-These were helped achieved by Rob during our group work, the lines of code are:
+### Worksheet Looping
 
-    Dim rng As Range
-    Dim maxvalue As Variant
-    Set rng = ws.Range("K:K")
-    maxvalue = Application.WorksheetFunction.Max(rng)
+The macro dynamically loops through all worksheets using the following structure:
 
+```vba
+For Each ws In Worksheets
+    ' Logic runs here
+Next ws
+This enables analysis across all yearly sheets without manual updates.
 
-    ws.Range("Q2").Value = maxvalue
-    ws.Range("Q2").NumberFormat = "0.00%"
+Summary Calculations
+For each stock ticker, the script calculates:
 
-    Dim minvalue As Variant
-    Set rng = ws.Range("K:K")
-    minvalue = Application.WorksheetFunction.Min(rng)
+Yearly Change
 
-    ws.Range("Q3").Value = minvalue
-    ws.Range("Q3").NumberFormat = "0.00%"
+Percent Change (handling division by zero)
 
-    Set rng = ws.Range("L:L")
-    maxvalue = Application.WorksheetFunction.Max(rng)
+Total Stock Volume
 
+Key variables:
 
-    ws.Range("Q4").Value = maxvalue
-
-## It does this for all three sheets for 2018 to 2020
-
-This is because we use ws as a reference and we have already specified
-
-' Loop through each worksheet
-    For Each ws In Worksheets
-
-        Next ws ' Close the loop through worksheets
-
-        Further Source: https://stackoverflow.com/questions/52012092/vba-loop-of-multiple-sheets-in-a-worksheet
-
-        and a source from Rob: https://www.mrexcel.com/board/threads/repeating-excel-macro-across-multiple-worksheets.1028802/
-
-## There are also calculations and variables set for the ticker name, volume of stock, open/close price
-
-Relevant code:
-
+vba
+Copy
+Edit
 Dim TickerName As String
-        Dim StockVolume As Double
-        Dim OpenPrice As Double
-        Dim ClosePrice As Double
-        Dim TotalVol As Double
+Dim StockVolume As Double
+Dim OpenPrice As Double
+Dim ClosePrice As Double
+Dim TotalVol As Double
+Maximum and Minimum Metrics
+The macro identifies the greatest percent increase, decrease, and highest volume:
 
-         For i = 2 To LastRow ' Skip header row
+vba
+Copy
+Edit
+maxvalue = Application.WorksheetFunction.Max(ws.Range("K:K"))
+minvalue = Application.WorksheetFunction.Min(ws.Range("K:K"))
+volumeMax = Application.WorksheetFunction.Max(ws.Range("L:L"))
 
-            If ws.Cells(i - 1, 1).Value <> ws.Cells(i, 1).Value Then
-                OpenPrice = ws.Cells(i, 3).Value ' Set OpenPrice
-            End If
+ws.Range("Q2").Value = maxvalue
+ws.Range("Q3").Value = minvalue
+ws.Range("Q4").Value = volumeMax
+Table Headers and Output
+Headers and metric labels are added dynamically:
 
-            If ws.Cells(i + 1, 1).Value <> ws.Cells(i, 1).Value Then
+vba
+Copy
+Edit
+ws.Range("I1:L1").Value = Array("Ticker", "Yearly Change", "Percent Change", "Total Stock Volume")
+ws.Range("P1:Q1").Value = Array("Ticker", "Value")
+ws.Range("O2").Value = "Greatest % Increase"
+ws.Range("O3").Value = "Greatest % Decrease"
+ws.Range("O4").Value = "Greatest Total Volume"
+Conditional Formatting
+Color formatting is applied to the Yearly Change column:
 
-                TickerName = ws.Cells(i, 1).Value
-                ClosePrice = ws.Cells(i, 6).Value
-                StockVolume = StockVolume + ws.Cells(i, 3).Value
+Green for positive change
 
-                YearlyChange = ClosePrice - OpenPrice
+Red for negative change
 
-                If OpenPrice = 0 Then
-                    Percentchange = 0
-                Else
-                    Percentchange = (ClosePrice - OpenPrice) / OpenPrice
-                End If
+Implementation:
 
-                TotalVol = TotalVol + ws.Cells(i, 7).Value
+vba
+Copy
+Edit
+If YearlyChange > 0 Then
+    ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
+Else
+    ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
+End If
+Multi-Year Analysis
+All logic runs across each of the three sheets representing 2018, 2019, and 2020. The use of ws allows the macro to generalize processing for each worksheet.
 
-                ' Print results to summary row table
-                ws.Range("I" & Summary_Table_Row).Value = TickerName
-                ws.Range("J" & Summary_Table_Row).Value = YearlyChange
+Known Limitation
+The current version does not identify the ticker name associated with the greatest percent increase, greatest percent decrease, or greatest total volume. This functionality remains to be implemented.
 
-                Printing was achieved like this:
-
-                                ws.Range("K" & Summary_Table_Row).Value = Percentchange
-                ws.Range("K" & Summary_Table_Row).NumberFormat = "0.00%"
-                ws.Range("L" & Summary_Table_Row).Value = TotalVol
-
-                                ws.Range("I" & Summary_Table_Row).Value = TickerName
-                ws.Range("J" & Summary_Table_Row).Value = YearlyChange
-
-                And as far as all percent changes formats, the source used was: https://www.statology.org/vba-percentage-format/
-
-## columns are also created for tickers, total volume, yearly change, and percent change through the script, further are created for greatest increase, decrease and greatest total volume through the VBA script
-These were done with these lines of code:
-
-        ws.Range("I1:L1").Value = Array("Ticker", "Yearly Change", "Percent Change", "Total Stock Volume")
-        ws.Range("P1:Q1").Value = Array("Ticker", "Value")
-        ws.Range("O2").Value = Array("Greatest % Increase")
-        ws.Range("O3").Value = Array("Greatest % Decrease")
-        ws.Range("O4").Value = Array("Greatest Total Volume")
-
-  These concepts were learned from the source: https://www.mrexcel.com/board/threads/add-column-headers-in-a-worksheet-using-vba.1078803/
-
-## Conditional formatting was also done in VBA to highlight the colours in the yearly change column
-
-Concepts for conditional formatting were verbally understood by Cadeem Musgrove on a Zoom call, and later implemented with my cohort as a team
-
-                A source to help grasp this concept include: 
-                https://learn.microsoft.com/en-us/office/vba/api/excel.colorindex
-                https://www.excel-pratique.com/en/vba_tricks/cell-color-conditional-formatting
-
-This was achieved with a combination of help from source and cohort, see below comment and sources for more conditional formatting.
-
-## This conditional formatting and all calculations ran for all three of the sheets that are in the Excel file
-
-this is with the aforementioned worksheet code and using ws. within the VBA Script
-
-Relevant lines of code:
-
-                If YearlyChange > 0 Then
-                    ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 4
-                Else
-                    ws.Range("J" & Summary_Table_Row).Interior.ColorIndex = 3
-                End If
-
-                A source to help grasp this concept include: 
-                https://learn.microsoft.com/en-us/office/vba/api/excel.colorindex
-                https://www.excel-pratique.com/en/vba_tricks/cell-color-conditional-formatting
-
-## One thing missing from this submission is the name of the ticker associated with the greatest % increase/decrease and greatest total volume
-
-I was not able to understand how to achieve this part of the solution
-
------------------------------------------------------------------------------------------------------
-
-All mentioned sources and further sources are in a separate document & below:
-
-https://www.mrexcel.com/board/threads/add-column-headers-in-a-worksheet-using-vba.1078803/
-
-https://stackoverflow.com/questions/57367032/how-can-i-select-a-cell-given-its-row-and-column-number
-
-https://www.statology.org/vba-percentage-format/
+References
+Sources consulted during development include:
 
 https://stackoverflow.com/questions/52012092/vba-loop-of-multiple-sheets-in-a-worksheet
 
-https://www.excel-pratique.com/en/vba_tricks/cell-color-conditional-formatting
+https://www.mrexcel.com/board/threads/repeating-excel-macro-across-multiple-worksheets.1028802
+
+https://www.statology.org/vba-percentage-format
 
 https://learn.microsoft.com/en-us/office/vba/api/excel.colorindex
 
-https://www.mrexcel.com/board/threads/repeating-excel-macro-across-multiple-worksheets.1028802/
+https://www.excel-pratique.com/en/vba_tricks/cell-color-conditional-formatting
 
-https://www.reddit.com/r/vba/comments/rek9i0/what_does_i_j_and_k_mean/
+https://trumpexcel.com/vba-loops
 
-https://stackoverflow.com/questions/4137785/why-are-variables-i-and-j-used-for-counters/454308#454308
+https://trumpexcel.com/vba-worksheets
 
-https://trumpexcel.com/vba-loops/
+How to Run
+Open the Excel workbook containing the stock data for 2018 to 2020
 
-https://trumpexcel.com/vba-worksheets/
+Open the VBA editor (Alt + F11)
 
-https://www.indeed.com/career-advice/career-development/how-to-enable-macros-in-excel#:~:text=To%20find%20%22Macro%20Settings%2C%22,OK%22%20to%20enable%20all%20macros.
+Import Sub Stocks_Test.bas
 
-https://www.reddit.com/r/vba/comments/fq5e0r/i_keep_getting_a_compile_error_next_without_for/
-
-https://chat.openai.com/share/1dc70cdb-2689-4aaa-a3c2-874a361d4cf9
+Run the macro to process the data and populate results across all sheets
