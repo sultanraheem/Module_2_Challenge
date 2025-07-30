@@ -1,4 +1,5 @@
-# VBA Stock Data Analysis – Module 2 Challenge
+# vba-stock-data-analysis
+VBA Stock Data Analysis – Module 2 Challenge
 
 ## Project Overview
 
